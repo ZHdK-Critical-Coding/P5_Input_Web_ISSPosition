@@ -1,24 +1,42 @@
-# P5 -> ISS Position
+# P5.js: ISS Position
 
-A p5.js sketch that fetches the current position of the International Space
-Station every two seconds and draws its track as dots on the canvas
-(longitude mapped to x, latitude to y).
+[Deutsch](README_DE.md)
 
-## How to Use
+Fetches the current position of the International Space Station every two
+seconds and draws its track as dots on the canvas (longitude mapped to x,
+latitude to y). An example of polling a web API with `fetch()` and turning
+live data into a drawing.
 
-1. Start Live Server (click **Go Live** in the VS Code status bar).
+## Installation
+
+Requirements: an internet connection and a current browser.
+
+1. Open the folder in Visual Studio Code and start Live Server (click
+   **Go Live** in the status bar).
 2. Leave the page open: a new dot is added every two seconds, so the orbit
    builds up slowly over time.
 
-## How it Works
-
 The position comes from the [Where the ISS at?](https://wheretheiss.at) API
-(`/v1/satellites/25544`). The request is routed through the AllOrigins proxy
-(`api.allorigins.win`) to avoid CORS restrictions, so no special browser
-setup is needed. Latitude (-90 to 90) and longitude (-180 to 180) are
-normalised to the canvas size.
+(`/v1/satellites/25544`). The request is routed through the AllOrigins
+proxy (`api.allorigins.win`) to avoid CORS restrictions, so no special
+browser setup is needed.
 
-## Libraries
+Libraries (in `libraries/`): p5.js 1.10.0, p5.sound 1.0.1 (included, not
+used).
 
-- p5.js 1.10.0
-- p5.sound 1.0.1
+## Coding Help
+
+- **`sketch.js` → `api_url`**: the API endpoint. Change it to fetch other
+  data (and adjust `getISS()`).
+- **`getISS()`**: fetches the URL through the AllOrigins proxy. The proxy
+  wraps the answer, so the real JSON is parsed from `d.contents`. Returns
+  `latitude` and `longitude`.
+- **`setup()`**: creates a full-window canvas and starts a `setInterval`
+  that pushes a new position into `positions` every 2000 ms. The
+  `console.log(position)` line in there refers to an undefined variable and
+  throws an error each time; replace it with
+  `positions[positions.length - 1]` or remove it.
+- **`draw()`**: normalizes latitude (−90…90) and longitude (−180…180) to
+  0–1 and draws a circle for each stored position. Latitude is not
+  inverted, so north is at the bottom; use `1 - norm_lat` to flip it.
+- **`windowResized()`**: resizes the canvas with the window.
