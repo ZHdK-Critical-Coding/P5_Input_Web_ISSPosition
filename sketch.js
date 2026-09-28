@@ -35,7 +35,7 @@ async function setup() {
   // Every 2 seconds, fetch the ISS position and store it
   setInterval(async () => {
     positions.push(await getISS());  // add new position to the array
-    console.log(position)             // <-- BUG: 'position' is undefined, should be 'positions[positions.length - 1]'
+    console.log(positions[positions.length - 1]) // log the newest position
   }, 2000)
 }
 
@@ -46,8 +46,8 @@ function draw() {
   // Draw all recorded ISS positions
   if (positions.length > 0) {
     positions.forEach(position => {
-      // Normalize latitude (-90 to 90) to 0–1
-      const norm_lat = (position.latitude + 90) / 180;
+      // Normalize latitude (-90 to 90) to 0–1, inverted so north is at the top
+      const norm_lat = 1 - (position.latitude + 90) / 180;
       
       // Normalize longitude (-180 to 180) to 0–1
       const norm_lon = (position.longitude + 180) / 360;
